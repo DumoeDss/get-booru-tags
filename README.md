@@ -5,7 +5,8 @@ Provides hotkeys on booru sites to quickly copy image tags
 * Install a script manager plugin/extention on your browser, such as Tampermonkey
     * on chrome: https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en
     * on firefox: https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/
-* Open this link and click install the script: https://sleazyfork.org/en/scripts/451098-get-booru-tags
+    * ~~Open this link and click install the script: https://sleazyfork.org/en/scripts/451098-get-booru-tags~~
+    * Open manager  dashboard, Drop the script to the browser
 
 # How to use
 1. Open an image on one of the supported booru sites
@@ -24,3 +25,5 @@ Note: To change default behavior or hotkeys, edit the script variables
 # Supported websites
 * danbooru.donmai.us
 * gelbooru.com
+* http://dev.kanotype.net:8003/deepdanbooru/
+* https://chan.sankakucomplex.com/

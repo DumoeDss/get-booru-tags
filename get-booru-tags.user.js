@@ -1,11 +1,13 @@
 // ==UserScript==
-// @name         Get Booru Tags
-// @namespace    https://github.com/onusai/
-// @version      0.4.4
-// @description  Press the [`] tilde key under ESC to open a prompt with all tags
+// @name         Get Booru Tags_Add Site Support
+// @namespace    https://github.com/DumoeDss/get-booru-tags
+// @version      0.4.4_1
+// @description  Press the [`] tilde key under ESC to open a prompt with all tags (Modify: Sayo)
 // @author       Onusai#6441
 // @match        https://gelbooru.com/index.php?page=post&s=view&id=*
 // @match        https://danbooru.donmai.us/posts/*
+// @match        http://dev.kanotype.net:8003/deepdanbooru/*
+// @match        https://chan.sankakucomplex.com/*
 // @grant        none
 // @license MIT
 // ==/UserScript==
@@ -27,18 +29,17 @@
 
     let keysPressed = {};
 
-    $(document).on('keydown', (event) => {
-        keysPressed[event.key] = true;
-
-        if (keysPressed[hotkey_use_defaults] && event.key == hotkey_no_commas_no_underscores) show_prompt(false, false);
+	document.addEventListener('keydown', function(event) {
+		keysPressed[event.key] = true;
+		if (keysPressed[hotkey_use_defaults] && event.key == hotkey_no_commas_no_underscores) show_prompt(false, false);
         else if (keysPressed[hotkey_use_defaults] && event.key == hotkey_yes_commas_no_underscores) show_prompt(true, false);
         else if (keysPressed[hotkey_use_defaults] && event.key == hotkey_no_commas_yes_underscores) show_prompt(false, true);
-        else if (keysPressed[hotkey_use_defaults] && event.key == hotkey_yes_commas_yes_underscores) show_prompt(true, true);
-    })
-
-     $(document).on('keyup', (event) => {
-         if (event.key == hotkey_use_defaults) show_prompt(include_commas, include_underscores);
-     });
+        else if (keysPressed[hotkey_use_defaults] && event.key == hotkey_yes_commas_yes_underscores) show_prompt(true, true);		       
+    });
+	
+	document.addEventListener('keyup', function(event) {
+		if (event.key == hotkey_use_defaults) show_prompt(include_commas, include_underscores);	       
+    });  
 
     function show_prompt(use_commas, use_underscores) {
         for (var member in keysPressed) delete keysPressed[member];
@@ -46,7 +47,8 @@
         let tags = null;
         if (window.location.href.includes("/gelbooru.com")) tags = get_gel_tags();
         else if (window.location.href.includes("/danbooru.donmai.us")) tags = get_dan_tags();
-
+		else if (window.location.href.includes("deepdanbooru")) tags = get_deepdan_tags();
+        else if (window.location.href.includes("sankakucomplex")) tags = get_sankakucomplex_tags();
         if (tags != null) {
             for (var i = 0; i < tags.length; i++) {
                 if (!use_underscores) tags[i] = tags[i].replaceAll("_", " ");
@@ -82,6 +84,25 @@
                 }
             })
         });
+        return iprompt;
+    }
+	
+	function get_deepdan_tags() {
+        var threshold = 0.7;
+        let iprompt = [];
+        $('table').find('tbody:not(:last)').find('tr').each(function(_){
+            if($(this).find('td').eq(1).text() > threshold){
+                iprompt.push($(this).find('td').first().text());
+            }
+        })
+        return iprompt;
+    }
+	
+    function get_sankakucomplex_tags() {
+        let elms = ["image-link"];
+        let iprompt = [];
+        var img = document.getElementById("image-link").children[0];
+        iprompt.push(img.alt);
         return iprompt;
     }
 
